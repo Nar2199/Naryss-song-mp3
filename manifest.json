@@ -35,5 +35,14 @@
       "url": "./index.html",
       "icons": [{ "src": "./IMG_20260915_221411.png", "sizes": "512x512" }]
     }
-  ]
+  ],
+  "share_target": {
+    "action": "./index.html",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
 }
