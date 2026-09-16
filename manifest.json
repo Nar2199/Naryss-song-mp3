@@ -1,0 +1,15 @@
+{
+  "name": "Naryss AI Songs",
+  "short_name": "Naryss Songs",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#09090e",
+  "theme_color": "#09090e",
+  "icons": [
+    {
+      "src": "IMG_20260915_221411.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
