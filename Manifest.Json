@@ -1,0 +1,14 @@
+here{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "nar2199.github",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "nar2199.github",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "id": "Naryss-song-mp3",
+  "description": "Naryss AI Songs App",
+  "lang": "en"
+}
