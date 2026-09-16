@@ -1,178 +1,217 @@
- <!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Naryss AI Songs</title>
-    <link rel="manifest" href="./manifest.json">
-    <link rel="icon" href="./icon.png" type="image/png">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-        /* التصميم الأساسي للمشغل */
-        body {
-            background-color: #0f0c1b;
-            color: #fff;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .header {
-            width: 100%;
-            max-width: 400px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #1a162b;
-            padding: 12px 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-        }
-        .track-list {
-            width: 100%;
-            max-width: 400px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 90px;
-        }
-        .track-item {
-            background: #1a162b;
-            padding: 12px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .track-item:hover {
-            background: #26213d;
-        }
-        .player-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: #161224;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.5);
-        }
-        .controls {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            margin-top: 10px;
-        }
-        button {
-            background: none;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            font-size: 18px;
-        }
-        .play-btn {
-            background: #8a2be2;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        input[type="range"] {
-            width: 90%;
-            max-width: 400px;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(18, 18, 24, 0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-player { background: rgba(24, 24, 32, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
     </style>
 </head>
-<body>
+<body class="bg-[#09090e] text-gray-100 min-h-screen flex flex-col pb-40">
 
-    <div class="header">
-        <div>
-            <h2>Naryss AI Songs</h2>
-            <p style="color: #b19cd9; margin: 0; font-size: 14px;">12 Working Tracks</p>
+    <!-- Header -->
+    <header class="glass sticky top-0 z-40 px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-indigo-300">Naryss AI Songs</h1>
+                <p class="text-xs text-purple-400 font-medium">12 Working Tracks</p>
+            </div>
         </div>
-        <div style="background: #2b2345; padding: 5px 12px; border-radius: 20px; font-size: 12px;">1/12</div>
-    </div>
-
-    <!-- حاوية قائمة الأغاني التي كانت مفقودة -->
-    <div class="track-list" id="track-list">
-        <!-- الأغاني ستظهر هنا تلقائياً -->
-    </div>
-
-    <div class="player-bar">
-        <div style="width: 100%; max-width: 400px; display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
-            <span id="current-time" style="font-size: 12px;">0:00</span>
-            <input type="range" id="progress-bar" value="0" min="0" max="100">
-            <span id="total-duration" style="font-size: 12px;">0:00</span>
+        <div class="text-xs font-semibold px-3 py-1.5 rounded-full glass text-purple-300">
+            <span id="current-track-num">1</span> / 12
         </div>
-        <div class="controls">
-            <button id="prev-btn">⏮</button>
-            <button class="play-btn" id="play-btn">▶</button>
-            <button id="next-btn">⏭</button>
+    </header>
+
+    <!-- Playlist Container -->
+    <main class="flex-1 max-w-xl w-full mx-auto p-4 space-y-3" id="playlist">
+    </main>
+
+    <!-- Bottom Sticky Player -->
+    <div class="fixed bottom-0 left-0 right-0 z-50 glass-player px-4 pt-3 pb-6 transition-all duration-300">
+        <div class="max-w-xl mx-auto space-y-3">
+            <div class="flex items-center space-x-3">
+                <img id="player-cover" src="" alt="Cover" class="w-12 h-12 rounded-xl object-cover shadow-md border border-white/10">
+                <div class="flex-1 min-w-0">
+                    <h2 id="player-title" class="text-sm font-bold text-white truncate">Select a track</h2>
+                    <p class="text-xs text-purple-400 truncate">Naryss AI</p>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="space-y-1">
+                <input type="range" id="progress-bar" value="0" max="100" class="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-purple-500">
+                <div class="flex justify-between text-[10px] text-gray-400 font-medium">
+                    <span id="current-time">0:00</span>
+                    <span id="total-duration">0:00</span>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex items-center justify-between px-2">
+                <button id="shuffle-btn" class="text-gray-400 hover:text-white transition p-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                </button>
+                <button id="prev-btn" class="text-gray-200 hover:text-white p-2">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                </button>
+                <button id="play-pause-btn" class="w-12 h-12 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-purple-500/40 hover:scale-105 transition">
+                    <svg id="play-icon" class="w-6 h-6 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    <svg id="pause-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </button>
+                <button id="next-btn" class="text-gray-200 hover:text-white p-2">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                </button>
+                <button id="repeat-btn" class="text-gray-400 hover:text-white transition p-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                </button>
+            </div>
         </div>
     </div>
 
     <audio id="audio-element"></audio>
 
     <script>
-        // بيانات الأغاني الـ 12
+        const baseUrl = "https://raw.githubusercontent.com/Nar2199/Naryss-song-mp3/main/";
+        
         const tracks = [
-            { title: "Catch me if you can", artist: "Naryss AI", src: "" },
-            { title: "New terms", artist: "Naryss AI", src: "" },
-            { title: "Money talks", artist: "Naryss AI", src: "" },
-            { title: "Quite fire", artist: "Naryss AI", src: "" }
-            // باقي الأغاني تضاف هنا
+            { title: "Quite fire", audio: "Quiet%20fire%20.mp3", img: "IMG_20260915_221411.png" },
+            { title: "Between the heat and us", audio: "Between%20the%20heat%20and%20us%20.mp3", img: "IMG_20260915_221512.png" },
+            { title: "I loved you in silence", audio: "I%20loved%20you%20in%20silence%20.mp3", img: "IMG_20260915_221535.png" },
+            { title: "Just friends", audio: "Just%20friends%20.mp3", img: "IMG_20260915_221700.png" },
+            { title: "Ride into your world", audio: "Ride%20into%20your%20world.mp3", img: "IMG_20260915_221755.png" },
+            { title: "Looking into my eyes", audio: "Looking%20into%20my%20eyes%20.mp3", img: "IMG_20260915_221834.png" },
+            { title: "Too pure for this world", audio: "Too%20pure%20for%20this%20world%20.mp3", img: "IMG_20260915_221856.png" },
+            { title: "She bloomed again", audio: "She%20blowmd%20again.mp3", img: "IMG_20260915_221916.png" },
+            { title: "Can you keep up?", audio: "Can%20you%20keep%20up_%20.mp3", img: "IMG_20260915_221935.png" },
+            { title: "Catch me if you can", audio: "Catch%20me%20if%20you%20can.mp3", img: "IMG_20260915_221953.png" },
+            { title: "New terms", audio: "New%20terms.m4a", img: "IMG_20260915_222038.png" },
+            { title: "Money talks", audio: "Money%20talks%20.mp3", img: "IMG_20260915_222058.png" }
         ];
 
-        let currentTrackIndex = 0;
+        let currentIndex = 0;
         const audioElement = document.getElementById('audio-element');
-        const playBtn = document.getElementById('play-btn');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+        const playerTitle = document.getElementById('player-title');
+        const playerCover = document.getElementById('player-cover');
         const progressBar = document.getElementById('progress-bar');
-        const trackListContainer = document.getElementById('track-list');
+        const currentTimeEl = document.getElementById('current-time');
+        const totalDurationEl = document.getElementById('total-duration');
+        const currentTrackNum = document.getElementById('current-track-num');
+        const playlistEl = document.getElementById('playlist');
+
+        function initPlaylist() {
+            playlistEl.innerHTML = '';
+            tracks.forEach((track, index) => {
+                const item = document.createElement('div');
+                item.className = `glass p-3 rounded-2xl flex items-center justify-between cursor-pointer transition hover:bg-white/10 ${index === currentIndex ? 'border-purple-500/50 bg-purple-500/10' : ''}`;
+                item.innerHTML = `
+                    <div class="flex items-center space-x-3 min-w-0">
+                        <img src="${baseUrl + track.img}" class="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-white/10">
+                        <div class="min-w-0">
+                            <h3 class="text-sm font-semibold truncate ${index === currentIndex ? 'text-purple-300' : 'text-white'}">${track.title}</h3>
+                            <p class="text-xs text-gray-400">Track ${index + 1}</p>
+                        </div>
+                    </div>
+                    <div class="w-9 h-9 rounded-full flex items-center justify-center text-purple-400 bg-white/5">
+                        <svg class="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                `;
+                item.addEventListener('click', () => {
+                    loadTrack(index);
+                    playAudio();
+                });
+                playlistEl.appendChild(item);
+            });
+        }
 
         function loadTrack(index) {
-            currentTrackIndex = index;
-            // يمكنك ربط مصدر الأغنية الفعلي هنا
+            currentIndex = index;
+            const track = tracks[index];
+            audioElement.src = baseUrl + track.audio;
+            playerTitle.textContent = track.title;
+            playerCover.src = baseUrl + track.img;
+            currentTrackNum.textContent = index + 1;
+            initPlaylist();
+        }
+
+        function playAudio() {
+            audioElement.play().catch(err => console.log("Playback error:", err));
+            playIcon.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
         }
 
         function pauseAudio() {
             audioElement.pause();
-            playBtn.textContent = "▶";
+            playIcon.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
         }
 
-        playBtn.addEventListener('click', () => {
+        playPauseBtn.addEventListener('click', () => {
             if (audioElement.paused) {
-                audioElement.play();
-                playBtn.textContent = "⏸";
+                if(!audioElement.src) loadTrack(0);
+                playAudio();
             } else {
                 pauseAudio();
             }
         });
 
-        // توليد قائمة الأغاني عرضياً لتعود للظهور
-        tracks.forEach((track, index) => {
-            const item = document.createElement('div');
-            item.className = 'track-item';
-            item.innerHTML = `<div><strong>${track.title}</strong><br><small>${track.artist}</small></div>`;
-            item.onclick = () => loadTrack(index);
-            trackListContainer.appendChild(item);
+        document.getElementById('next-btn').addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % tracks.length;
+            loadTrack(currentIndex);
+            playAudio();
         });
+
+        document.getElementById('prev-btn', () => {}).addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + tracks.length) % tracks.length;
+            loadTrack(currentIndex);
+            playAudio();
+        });
+
+        audioElement.addEventListener('timeupdate', () => {
+            if (audioElement.duration) {
+                progressBar.value = (audioElement.currentTime / audioElement.duration) * 100;
+                currentTimeEl.textContent = formatTime(audioElement.currentTime);
+                totalDurationEl.textContent = formatTime(audioElement.duration);
+            }
+        });
+
+        progressBar.addEventListener('input', () => {
+            if (audioElement.duration) {
+                audioElement.currentTime = (progressBar.value / 100) * audioElement.duration;
+            }
+        });
+
+        audioElement.addEventListener('ended', () => {
+            document.getElementById('next-btn').click();
+        });
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
 
         loadTrack(0);
         pauseAudio();
 
-        // تفعيل Service Worker للعمل بدون إنترنت
+        // تفعيل وضع عدم الاتصال (Offline PWA Service Worker)
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then((reg) => console.log('Service Worker registered!', reg))
-                    .catch((err) => console.log('Service Worker registration failed:', err));
-            });
+            navigator.serviceWorker.register('./sw.js');
         }
     </script>
 </body>
