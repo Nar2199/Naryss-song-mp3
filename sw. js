@@ -1,0 +1,31 @@
+hereconst CACHE_NAME = 'naryss-songs-v1';
+
+// تثبيت التطبيق وتخزين الصفحة الأساسية في الذاكرة
+self.addEventListener('install', (e) => {
+    e.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            return cache.addAll([
+                './',
+                './index.html'
+            ]);
+        })
+    );
+});
+
+// تشغيل التطبيق والأغاني حتى لو انقطع الإنترنت (Offline Mode)
+self.addEventListener('fetch', (e) => {
+    e.respondWith(
+        caches.match(e.request).then((cachedResponse) => {
+            return cachedResponse || fetch(e.request).then((response) => {
+                // تخزين أي أغنية أو صورة يتم تشغيلها تلقائياً في ذاكرة الهاتف للاستخدام لاحقاً بدون إنترنت
+                return caches.open(CACHE_NAME).then((cache) => {
+                    cache.put(e.request, response.clone());
+                    return response;
+                });
+            }).catch(() => {
+                // في حال انقطاع الإنترنت نهائياً، يتم جلب الملف من ذاكرة الهاتف المؤقتة
+                return caches.match(e.request);
+            });
+        })
+    );
+});
