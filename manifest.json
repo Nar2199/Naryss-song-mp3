@@ -1,4 +1,5 @@
 {
+  "id": "/?source=pwa",
   "name": "Naryss Song App",
   "short_name": "Naryss",
   "description": "An offline PWA application for Naryss AI songs, music tracks, and creative audio experiences.",
@@ -19,12 +20,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    },
-    {
-      "src": "./IMG_20260915_221411.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
     }
   ],
   "shortcuts": [
@@ -33,7 +28,29 @@
       "short_name": "Songs",
       "description": "Open your music library",
       "url": "./index.html",
-      "icons": [{ "src": "./IMG_20260915_221411.png", "sizes": "512x512" }]
+      "icons": [
+        {
+          "src": "./IMG_20260915_221411.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./IMG_20260915_221411.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Naryss App Home"
+    },
+    {
+      "src": "./IMG_20260915_221411.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Naryss App Mobile"
     }
   ],
   "share_target": {
