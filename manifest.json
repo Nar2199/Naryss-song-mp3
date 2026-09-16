@@ -1,15 +1,23 @@
 {
   "name": "Naryss Song App",
   "short_name": "Naryss",
+  "description": "An offline PWA application for Naryss AI songs, music tracks, and creative audio experiences.",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0f0f16",
   "theme_color": "#8a2be2",
+  "categories": ["music", "entertainment", "multimedia"],
+  "lang": "en",
+  "dir": "ltr",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "./IMG_20260915_221411.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
