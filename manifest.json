@@ -16,6 +16,11 @@
   "iarc_rating_id": "urn:fb:rating:all",
   "prefer_related_applications": false,
   "related_applications": [],
+  "scope_extensions": [
+    {
+      "origin": "https://github.com"
+    }
+  ],
   "icons": [
     {
       "src": "./IMG_20260917_011837.png",
