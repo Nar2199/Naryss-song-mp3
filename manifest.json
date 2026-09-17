@@ -13,12 +13,10 @@
   "categories": ["music", "entertainment", "multimedia"],
   "lang": "en",
   "dir": "ltr",
-  "iarc_rating_id": "urn:fb:rating:all",
-  "prefer_related_applications": false,
-  "related_applications": [],
+  "iarc_rating_id": "urn:fb:rating:ESRB",
   "scope_extensions": [
     {
-      "origin": "https://github.io"
+      "origin": "https://nar2199.github.io"
     }
   ],
   "icons": [
@@ -45,10 +43,17 @@
     },
     {
       "src": "./IMG_20260917_021242.png",
-      "sizes": "192x1920",
+      "sizes": "1080x1920",
       "type": "image/png",
-      "form_factor": "wide",
-      "label": "Wide View"
+      "form_factor": "narrow",
+      "label": "Playlist Top View"
+    },
+    {
+      "src": "./IMG_20260917_021215.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Playlist Bottom View"
     }
   ],
   "share_target": {
