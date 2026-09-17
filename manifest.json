@@ -1,0 +1,65 @@
+{
+  "id": "./?source-pwa",
+  "name": "Symphony AI",
+  "short_name": "Symphony",
+  "description": "An offline PWA application for Symphony AI music tracks and creative audio experience.",
+  "start_url": "./index.html?v=2.0",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#09090e",
+  "theme_color": "#09090e",
+  "categories": ["music", "entertainment", "multimedia"],
+  "lang": "en",
+  "dir": "ltr",
+  "iarc_rating_id": "urn:fb:rating:all",
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "icons": [
+    {
+      "src": "./IMG_20260917_011837.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./IMG_20260917_011837.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./IMG_20260917_021150.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Welcome Screen"
+    },
+    {
+      "src": "./IMG_20260917_021242.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Playlist Top View"
+    },
+    {
+      "src": "./IMG_20260917_021215.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Playlist Bottom View"
+    }
+  ],
+  "share_target": {
+    "action": "./index.html",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}
