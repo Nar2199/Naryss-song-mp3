@@ -52,10 +52,10 @@
     },
     {
       "src": "./IMG_20260917_021215.png",
-      "sizes": "192x1920",
+      "sizes": "1080x1920",
       "type": "image/png",
-      "form_factor": "wide",
-      "label": "Playlist Wide View"
+      "form_factor": "narrow",
+      "label": "Playlist Bottom View"
     }
   ],
   "share_target": {
