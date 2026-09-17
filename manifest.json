@@ -30,11 +30,25 @@
   ],
   "screenshots": [
     {
-      "src": "./IMG_20260917_011837.png",
-      "sizes": "512x512",
+      "src": "./IMG_20260917_021150.png",
+      "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Symphony AI Welcome Screen"
+      "label": "Welcome Screen"
+    },
+    {
+      "src": "./IMG_20260917_021242.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Playlist Top View"
+    },
+    {
+      "src": "./IMG_20260917_021215.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Playlist Bottom View"
     }
   ],
   "share_target": {
