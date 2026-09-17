@@ -2,7 +2,7 @@
   "id": "./?source-pwa",
   "name": "Symphony AI",
   "short_name": "Symphony",
-  "description": "An offline PWA application for Symphony AI music tracks, and creative audio experience.",
+  "description": "An offline PWA application for Symphony AI music tracks and creative audio experience.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -17,15 +17,24 @@
   "icons": [
     {
       "src": "./IMG_20260917_011837.png",
-      "sizes": "512x512",
+      "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
       "src": "./IMG_20260917_011837.png",
-      "sizes": "192x192",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./IMG_20260917_011837.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Symphony AI Welcome Screen"
     }
   ],
   "share_target": {
