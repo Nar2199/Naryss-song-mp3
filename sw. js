@@ -1,31 +1,41 @@
-Hereconst CACHE_NAME = 'naryss-songs-v1';
+const CACHE_NAME = 'naryss-songs-v1';
 
-// تثبيت التطبيق وتخزين الصفحة الأساسية في الذاكرة
+// 1. تثبيت التطبيق وتخزين الملف الأساسي
 self.addEventListener('install', (e) => {
-    e.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll([
-                './',
-                './index.html'
-            ]);
-        })
-    );
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(['./index.html']);
+    })
+  );
+  self.skipWaiting();
 });
 
-// تشغيل التطبيق والأغاني حتى لو انقطع الإنترنت (Offline Mode)
+// 2. تفعيل الخدمة لتنظيف الذاكرة القديمة وضمان العمل الفوري
+self.addEventListener('activate', (e) => {
+  e.waitUntil(self.clients.claim());
+});
+
+// 3. الدمج الذكي للـ Fetch (يجمع بين سرعة الكود البسيط وقوة التخزين المؤقت المتقدمة)
 self.addEventListener('fetch', (e) => {
-    e.respondWith(
-        caches.match(e.request).then((cachedResponse) => {
-            return cachedResponse || fetch(e.request).then((response) => {
-                // تخزين أي أغنية أو صورة يتم تشغيلها تلقائياً في ذاكرة الهاتف للاستخدام لاحقاً بدون إنترنت
-                return caches.open(CACHE_NAME).then((cache) => {
-                    cache.put(e.request, response.clone());
-                    return response;
-                });
-            }).catch(() => {
-                // في حال انقطاع الإنترنت نهائياً، يتم جلب الملف من ذاكرة الهاتف المؤقتة
-                return caches.match(e.request);
-            });
-        })
-    );
+  e.respondWith(
+    caches.match(e.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+      return fetch(e.request).then((response) => {
+        // التأكد من أن الاستجابة صالحة قبل تخزينها
+        if (!response || response.status !== 200 || response.type !== 'basic') {
+          return response;
+        }
+        const responseToCache = response.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(e.request, responseToCache);
+        });
+        return response;
+      }).catch(() => {
+        // العودة إلى الصفحة الأساسية في حال انقطاع الشبكة تماماً
+        return caches.match('./index.html');
+      });
+    })
+  );
 });
