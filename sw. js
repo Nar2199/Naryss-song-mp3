@@ -1,42 +1,31 @@
-const CACHE_NAME = 'naryss-music-v1';
-const assetsToCache = [
-  './',
-  './index.html'
-];
+Hereconst CACHE_NAME = 'naryss-songs-v1';
 
-// تثبيت الـ Service Worker وتخزين الملفات الأساسية
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        return cache.addAll(assetsToCache);
-      })
-  );
-  self.skipWaiting();
-});
-
-// تفعيل الخدمة وتنظيف الملفات القديمة
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            return caches.delete(cache);
-          }
+// تثبيت التطبيق وتخزين الصفحة الأساسية في الذاكرة
+self.addEventListener('install', (e) => {
+    e.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            return cache.addAll([
+                './',
+                './index.html'
+            ]);
         })
-      );
-    })
-  );
-  self.clients.claim();
+    );
 });
 
-// استراتيجية الجلب (تضمن نجاح Offline Support و Has Logic)
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        return response || fetch(event.request);
-      })
-  );
+// تشغيل التطبيق والأغاني حتى لو انقطع الإنترنت (Offline Mode)
+self.addEventListener('fetch', (e) => {
+    e.respondWith(
+        caches.match(e.request).then((cachedResponse) => {
+            return cachedResponse || fetch(e.request).then((response) => {
+                // تخزين أي أغنية أو صورة يتم تشغيلها تلقائياً في ذاكرة الهاتف للاستخدام لاحقاً بدون إنترنت
+                return caches.open(CACHE_NAME).then((cache) => {
+                    cache.put(e.request, response.clone());
+                    return response;
+                });
+            }).catch(() => {
+                // في حال انقطاع الإنترنت نهائياً، يتم جلب الملف من ذاكرة الهاتف المؤقتة
+                return caches.match(e.request);
+            });
+        })
+    );
 });
