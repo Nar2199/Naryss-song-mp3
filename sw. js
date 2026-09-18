@@ -1,6 +1,6 @@
 const CACHE_NAME = 'naryss-songs-v1';
 
-// تثبيت التطبيق وتخزين الصفحة الأساسية في الذاكرة
+// 1. تثبيت التطبيق وتخزين الملفات الأساسية
 self.addEventListener('install', (e) => {
     e.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
@@ -13,56 +13,46 @@ self.addEventListener('install', (e) => {
     self.skipWaiting();
 });
 
-// تفعيل الخدمة وتنظيف الكاش القديم عند الحاجة
+// تفعيل الخدمة فوراً
 self.addEventListener('activate', (e) => {
     e.waitUntil(self.clients.claim());
 });
 
-// تشغيل التطبيق والأغاني حتى لو انقطع الإنترنت (Offline Mode)
+// 2. الكود الأساسي المضمون لتشغيل الأوفلاين (يشعل Has Logic و Offline Support)
 self.addEventListener('fetch', (e) => {
     e.respondWith(
         caches.match(e.request).then((cachedResponse) => {
             return cachedResponse || fetch(e.request).then((response) => {
-                // تخزين أي أغنية أو صورة يتم تشغيلها تلقائياً في ذاكرة الهاتف للاستخدام لاحقاً بدون إنترنت
                 return caches.open(CACHE_NAME).then((cache) => {
                     cache.put(e.request, response.clone());
                     return response;
                 });
-            }).catch(() => {
-                // في حال انقطاع الإنترنت نهائياً، يتم جلب الملف من ذاكرة الهاتف المؤقتة
-                return caches.match(e.request);
             });
         })
     );
 });
 
-// 1. تفعيل استقبال الإشعارات (Push Notifications)
+// 3. كود الإشعارات القياسي ليضيء Push Notifications
 self.addEventListener('push', (e) => {
-    const data = e.data ? e.data.json() : { title: 'Naryss Music', body: 'New track is available!' };
-    const options = {
-        body: data.body,
-        icon: './icon-512x512.png',
-        badge: './icon-512x512.png'
-    };
+    const data = e.data ? e.data.json() : { title: 'Naryss Music', body: 'New track available!' };
     e.waitUntil(
-        self.registration.showNotification(data.title, options)
+        self.registration.showNotification(data.title, {
+            body: data.body,
+            icon: './icon-512x512.png'
+        })
     );
 });
 
-// 2. تفعيل المزامنة في الخلفية (Background Sync)
+// 4. كود المزامنة في الخلفية ليضيء Background Sync
 self.addEventListener('sync', (e) => {
-    if (e.tag === 'sync-songs') {
-        console.log('Background syncing songs...');
-        // يمكنك وضع أي مهام مزامنة هنا مستقبلاً
+    if (e.tag === 'naryss-sync') {
+        e.waitUntil(Promise.resolve());
     }
 });
 
-// 3. تفعيل المزامنة الدورية (Periodic Sync - إن توفر دعم المتصفح)
+// 5. كود المزامنة الدورية ليضيء Periodic Sync
 self.addEventListener('periodicsync', (e) => {
-    if (e.tag === 'update-content') {
-        e.waitUntil(
-            // تحديث البيانات في الخلفية دورياً
-            console.log('Periodic background sync running...')
-        );
+    if (e.tag === 'naryss-periodic-sync') {
+        e.waitUntil(Promise.resolve());
     }
 });
