@@ -1,4 +1,4 @@
-econst CACHE_NAME = 'naryss-songs-v2';
+const CACHE_NAME = 'naryss-songs-v2';
 
 // 1. تثبيت التطبيق وتخزين الملفات الأساسية
 self.addEventListener('install', (e) => {
