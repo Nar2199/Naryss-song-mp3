@@ -1,59 +1,42 @@
-const CACHE_NAME = 'naryss-songs-v1';
+const CACHE_NAME = 'naryss-music-v1';
+const assetsToCache = [
+  './',
+  './index.html'
+];
 
-// 1. تثبيت التطبيق وتخزين الملفات
+// تثبيت الـ Service Worker وتخزين الملفات الأساسية
 self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll([
-                './',
-                './index.html'
-            ]);
-        })
-    );
-    self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        return cache.addAll(assetsToCache);
+      })
+  );
+  self.skipWaiting();
 });
 
-// 2. تفعيل الخدمة
+// تفعيل الخدمة وتنظيف الملفات القديمة
 self.addEventListener('activate', (event) => {
-    event.waitUntil(self.clients.claim());
-});
-
-// 3. المنطق الأساسي للـ Fetch (هذا هو المسؤول عن إضاءة Has Logic و Offline Support)
-self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        caches.match(event.request).then((response) => {
-            return response || fetch(event.request).then((fetchResponse) => {
-                return caches.open(CACHE_NAME).then((cache) => {
-                    cache.put(event.request, fetchResponse.clone());
-                    return fetchResponse;
-                });
-            }).catch(() => {
-                return caches.match('./index.html');
-            });
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cache) => {
+          if (cache !== CACHE_NAME) {
+            return caches.delete(cache);
+          }
         })
-    );
+      );
+    })
+  );
+  self.clients.claim();
 });
 
-// 4. معالج الإشعارات (Push Notifications)
-self.addEventListener('push', (event) => {
-    const title = 'Naryss Music';
-    const options = {
-        body: event.data ? event.data.text() : 'New track available!',
-        icon: './icon-512x512.png'
-    };
-    event.waitUntil(self.registration.showNotification(title, options));
-});
-
-// 5. معالج المزامنة في الخلفية (Background Sync)
-self.addEventListener('sync', (event) => {
-    if (event.tag === 'sync-track') {
-        event.waitUntil(Promise.resolve());
-    }
-});
-
-// 6. معالج المزامنة الدورية (Periodic Sync)
-self.addEventListener('periodicsync', (event) => {
-    if (event.tag === 'content-sync') {
-        event.waitUntil(Promise.resolve());
-    }
+// استراتيجية الجلب (تضمن نجاح Offline Support و Has Logic)
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request)
+      .then((response) => {
+        return response || fetch(event.request);
+      })
+  );
 });
