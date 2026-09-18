@@ -2,9 +2,8 @@
   "id": "./?source=pwa",
   "name": "Naryss Music",
   "short_name": "Naryss",
-  "description": "An official music app featuring original AI tracks created with Suno by Naryss.", 
-"iarc_rating_id": "urn:iarc:other.pegi.16+",
-  "screenshots": [ 
+  "description": "An official music app featuring original AI tracks created with Suno by Naryss.",
+  "iarc_rating_id": "urn:iarc:other.pegi.16+",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -39,6 +38,24 @@
       "type": "image/png",
       "form_factor": "wide",
       "label": "Naryss Music Banner"
+    },
+    {
+      "src": "IMG_1.jpg",
+      "sizes": "720x1432",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "IMG_2.jpg",
+      "sizes": "718x1472",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "IMG_3.jpg",
+      "sizes": "720x1466",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
     }
   ],
   "share_target": {
