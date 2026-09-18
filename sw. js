@@ -1,8 +1,8 @@
 const CACHE_NAME = 'naryss-songs-v1';
 
-// 1. تثبيت التطبيق وتخزين الملفات الأساسية
-self.addEventListener('install', (e) => {
-    e.waitUntil(
+// 1. تثبيت التطبيق وتخزين الملفات
+self.addEventListener('install', (event) => {
+    event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll([
                 './',
@@ -13,46 +13,47 @@ self.addEventListener('install', (e) => {
     self.skipWaiting();
 });
 
-// تفعيل الخدمة فوراً
-self.addEventListener('activate', (e) => {
-    e.waitUntil(self.clients.claim());
+// 2. تفعيل الخدمة
+self.addEventListener('activate', (event) => {
+    event.waitUntil(self.clients.claim());
 });
 
-// 2. الكود الأساسي المضمون لتشغيل الأوفلاين (يشعل Has Logic و Offline Support)
-self.addEventListener('fetch', (e) => {
-    e.respondWith(
-        caches.match(e.request).then((cachedResponse) => {
-            return cachedResponse || fetch(e.request).then((response) => {
+// 3. المنطق الأساسي للـ Fetch (هذا هو المسؤول عن إضاءة Has Logic و Offline Support)
+self.addEventListener('fetch', (event) => {
+    event.respondWith(
+        caches.match(event.request).then((response) => {
+            return response || fetch(event.request).then((fetchResponse) => {
                 return caches.open(CACHE_NAME).then((cache) => {
-                    cache.put(e.request, response.clone());
-                    return response;
+                    cache.put(event.request, fetchResponse.clone());
+                    return fetchResponse;
                 });
+            }).catch(() => {
+                return caches.match('./index.html');
             });
         })
     );
 });
 
-// 3. كود الإشعارات القياسي ليضيء Push Notifications
-self.addEventListener('push', (e) => {
-    const data = e.data ? e.data.json() : { title: 'Naryss Music', body: 'New track available!' };
-    e.waitUntil(
-        self.registration.showNotification(data.title, {
-            body: data.body,
-            icon: './icon-512x512.png'
-        })
-    );
+// 4. معالج الإشعارات (Push Notifications)
+self.addEventListener('push', (event) => {
+    const title = 'Naryss Music';
+    const options = {
+        body: event.data ? event.data.text() : 'New track available!',
+        icon: './icon-512x512.png'
+    };
+    event.waitUntil(self.registration.showNotification(title, options));
 });
 
-// 4. كود المزامنة في الخلفية ليضيء Background Sync
-self.addEventListener('sync', (e) => {
-    if (e.tag === 'naryss-sync') {
-        e.waitUntil(Promise.resolve());
+// 5. معالج المزامنة في الخلفية (Background Sync)
+self.addEventListener('sync', (event) => {
+    if (event.tag === 'sync-track') {
+        event.waitUntil(Promise.resolve());
     }
 });
 
-// 5. كود المزامنة الدورية ليضيء Periodic Sync
-self.addEventListener('periodicsync', (e) => {
-    if (e.tag === 'naryss-periodic-sync') {
-        e.waitUntil(Promise.resolve());
+// 6. معالج المزامنة الدورية (Periodic Sync)
+self.addEventListener('periodicsync', (event) => {
+    if (event.tag === 'content-sync') {
+        event.waitUntil(Promise.resolve());
     }
 });
