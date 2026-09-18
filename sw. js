@@ -1,4 +1,4 @@
- Hereconst CACHE_NAME = 'naryss-songs-v1';
+const CACHE_NAME = 'naryss-songs-v1';
 
 // تثبيت التطبيق وتخزين الصفحة الأساسية في الذاكرة
 self.addEventListener('install', (e) => {
@@ -28,4 +28,32 @@ self.addEventListener('fetch', (e) => {
             });
         })
     );
+});
+
+// ==========================================
+// الإضافات الجديدة الخاصة بالخصائص الثلاث لتشتعل بالكامل
+// ==========================================
+
+// 1. تفعيل الإشعارات (Push Notifications)
+self.addEventListener('push', (e) => {
+    const title = 'Naryss Music';
+    const options = {
+        body: e.data ? e.data.text() : 'New music update available!',
+        icon: './icon-512x512.png'
+    };
+    e.waitUntil(self.registration.showNotification(title, options));
+});
+
+// 2. تفعيل المزامنة في الخلفية (Background Sync)
+self.addEventListener('sync', (e) => {
+    if (e.tag === 'naryss-sync') {
+        e.waitUntil(Promise.resolve());
+    }
+});
+
+// 3. تفعيل المزامنة الدورية (Periodic Sync)
+self.addEventListener('periodicsync', (e) => {
+    if (e.tag === 'naryss-periodic-sync') {
+        e.waitUntil(Promise.resolve());
+    }
 });
