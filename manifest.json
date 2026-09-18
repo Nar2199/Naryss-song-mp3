@@ -1,8 +1,8 @@
 {
-  "id": "/?source=pwa",
+  "id": "./?source=pwa",
   "name": "Naryss Music",
   "short_name": "Naryss",
-  "description": "An official offline PWA application for Naryss AI music tracks and creative audio experiences.",
+  "description": "An official offline PWA application for Naryss AI music tracks, R&B soul ballads, and creative audio experiences.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
