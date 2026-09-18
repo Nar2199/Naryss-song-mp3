@@ -1,6 +1,6 @@
-const CACHE_NAME = 'naryss-songs-v1';
+hereconst CACHE_NAME = 'naryss-songs-v1';
 
-// تثبيت التطبيق وتخزين الصفحة الأساسية في الذاكرة
+// 1. تثبيت التطبيق وتخزين الملفات الأساسية
 self.addEventListener('install', (e) => {
     e.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
@@ -10,50 +10,68 @@ self.addEventListener('install', (e) => {
             ]);
         })
     );
+    self.skipWaiting();
 });
 
-// تشغيل التطبيق والأغاني حتى لو انقطع الإنترنت (Offline Mode)
+// 2. تفعيل الخدمة وتنظيف الذاكرة القديمة
+self.addEventListener('activate', (e) => {
+    e.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cache) => {
+                    if (cache !== CACHE_NAME) {
+                        return caches.delete(cache);
+                    }
+                })
+            );
+        }).then(() => self.clients.claim())
+    );
+});
+
+// 3. جلب الأغاني والملفات (Offline Mode & Cache)
 self.addEventListener('fetch', (e) => {
     e.respondWith(
         caches.match(e.request).then((cachedResponse) => {
             return cachedResponse || fetch(e.request).then((response) => {
-                // تخزين أي أغنية أو صورة يتم تشغيلها تلقائياً في ذاكرة الهاتف للاستخدام لاحقاً بدون إنترنت
                 return caches.open(CACHE_NAME).then((cache) => {
                     cache.put(e.request, response.clone());
                     return response;
                 });
             }).catch(() => {
-                // في حال انقطاع الإنترنت نهائياً، يتم جلب الملف من ذاكرة الهاتف المؤقتة
-                return caches.match(e.request);
+                return caches.match('./index.html');
             });
         })
     );
 });
 
-// ==========================================
-// الإضافات الجديدة الخاصة بالخصائص الثلاث لتشتعل بالكامل
-// ==========================================
-
-// 1. تفعيل الإشعارات (Push Notifications)
+// 4. استجابة الإشعارات (Push Notifications Logic)
 self.addEventListener('push', (e) => {
-    const title = 'Naryss Music';
+    const data = e.data ? e.data.json() : {};
+    const title = data.title || 'Naryss Music';
     const options = {
-        body: e.data ? e.data.text() : 'New music update available!',
-        icon: './icon-512x512.png'
+        body: data.body || 'New music update is available!',
+        icon: './icon-512x512.png',
+        badge: './icon-512x512.png'
     };
     e.waitUntil(self.registration.showNotification(title, options));
 });
 
-// 2. تفعيل المزامنة في الخلفية (Background Sync)
+// 5. استجابة مزامنة الخلفية (Background Sync Logic)
 self.addEventListener('sync', (e) => {
     if (e.tag === 'naryss-sync') {
-        e.waitUntil(Promise.resolve());
+        e.waitUntil(
+            // منطق مزامنة البيانات في الخلفية عند عودة الإنترنت
+            Promise.resolve()
+        );
     }
 });
 
-// 3. تفعيل المزامنة الدورية (Periodic Sync)
+// 6. استجابة المزامنة الدورية (Periodic Sync Logic)
 self.addEventListener('periodicsync', (e) => {
     if (e.tag === 'naryss-periodic-sync') {
-        e.waitUntil(Promise.resolve());
+        e.waitUntil(
+            // منطق تحديث المحتوى دورياً في الخلفية
+            Promise.resolve()
+        );
     }
 });
