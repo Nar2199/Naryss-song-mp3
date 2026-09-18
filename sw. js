@@ -1,4 +1,4 @@
-hereconst CACHE_NAME = 'naryss-songs-v1';
+const CACHE_NAME = 'naryss-songs-v1';
 
 // تثبيت التطبيق وتخزين الصفحة الأساسية في الذاكرة
 self.addEventListener('install', (e) => {
@@ -10,6 +10,12 @@ self.addEventListener('install', (e) => {
             ]);
         })
     );
+    self.skipWaiting();
+});
+
+// تفعيل الخدمة وتنظيف الكاش القديم عند الحاجة
+self.addEventListener('activate', (e) => {
+    e.waitUntil(self.clients.claim());
 });
 
 // تشغيل التطبيق والأغاني حتى لو انقطع الإنترنت (Offline Mode)
@@ -28,4 +34,35 @@ self.addEventListener('fetch', (e) => {
             });
         })
     );
+});
+
+// 1. تفعيل استقبال الإشعارات (Push Notifications)
+self.addEventListener('push', (e) => {
+    const data = e.data ? e.data.json() : { title: 'Naryss Music', body: 'New track is available!' };
+    const options = {
+        body: data.body,
+        icon: './icon-512x512.png',
+        badge: './icon-512x512.png'
+    };
+    e.waitUntil(
+        self.registration.showNotification(data.title, options)
+    );
+});
+
+// 2. تفعيل المزامنة في الخلفية (Background Sync)
+self.addEventListener('sync', (e) => {
+    if (e.tag === 'sync-songs') {
+        console.log('Background syncing songs...');
+        // يمكنك وضع أي مهام مزامنة هنا مستقبلاً
+    }
+});
+
+// 3. تفعيل المزامنة الدورية (Periodic Sync - إن توفر دعم المتصفح)
+self.addEventListener('periodicsync', (e) => {
+    if (e.tag === 'update-content') {
+        e.waitUntil(
+            // تحديث البيانات في الخلفية دورياً
+            console.log('Periodic background sync running...')
+        );
+    }
 });
