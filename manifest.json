@@ -1,7 +1,7 @@
 {
   "id": "./?source=pwa",
   "name": "Naryss Music",
-  "short_name": "Naryss",
+  "short_name": "Naryss Music",
   "description": "An official music app featuring original AI tracks created with Suno by Naryss.",
   "iarc_rating_id": "urn:iarc:other.pegi.16+",
   "start_url": "./index.html",
